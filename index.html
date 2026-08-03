@@ -374,6 +374,26 @@
             animation: pulseIcon 2s infinite alternate;
         }
 
+        /* Mini Icon Custom Image */
+        .card-icon-img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid var(--accent-orange);
+            box-shadow: 0 0 10px var(--glow-orange);
+        }
+
+        .autoclick-banner-img {
+            width: 65px;
+            height: 65px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1.5px solid var(--accent-orange);
+            box-shadow: 0 0 15px var(--glow-orange);
+            flex-shrink: 0;
+        }
+
         @keyframes pulseIcon {
             0% { transform: scale(1); filter: drop-shadow(0 0 2px var(--accent-orange)); }
             100% { transform: scale(1.2); filter: drop-shadow(0 0 8px var(--accent-orange)); }
@@ -702,23 +722,23 @@
                 </div>
             </div>
 
-            <!-- Auto Click Download Box -->
+            <!-- Auto Click Download Box con su imagen oficial -->
             <div class="script-box tilt-card">
                 <div class="script-header">
                     <div class="script-title">
-                        <i class="fa-solid fa-computer-mouse"></i>
+                        <img src="autoclick.png" alt="ChrisXTM Auto Click" class="card-icon-img">
                         <span>ChrisXTM Auto Click</span>
                     </div>
-                    <!-- Cambia ChrisXTM_AutoClick.exe según el nombre exacto de tu ejecutable -->
-                    <a href="ChrisXTM AutoClick.exe" download="ChrisXTM AutoClick.exe" class="btn-download">
+                    <a href="https://github.com/ChrisXTM/ChrisXTM-Hostinger-page/releases/download/v0.1/ChrisXTM.Auto.Click.exe" class="btn-download" target="_blank" rel="noopener noreferrer">
                         <i class="fa-solid fa-download"></i>
                         <span>Download</span>
                     </a>
                 </div>
-                <div class="code-block" style="white-space: normal; line-height: 1.6;">
+                <div class="code-block" style="white-space: normal; line-height: 1.6; display: flex; align-items: center; gap: 16px;">
+                    <img src="autoclick.png" alt="Auto Clicker Logo Preview" class="autoclick-banner-img">
                     <p style="color: var(--text-muted); font-size: 0.88rem; margin: 0;">
                         <i class="fa-solid fa-shield-halved" style="color: var(--accent-cyan); margin-right: 6px;"></i>
-                        Official Auto Clicker optimized for Roblox games. Click download to get the latest standalone release.
+                        Official standalone Auto Clicker tool optimized for Roblox games. Click download to get the latest release.
                     </p>
                 </div>
             </div>
