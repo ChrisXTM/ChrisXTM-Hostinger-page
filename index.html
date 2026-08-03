@@ -305,10 +305,13 @@
             line-height: 1.6;
         }
 
-        /* Script Container Box with Dynamic Glowing Border */
+        /* Script Container Box with Dynamic Grid Layout */
         .script-section {
-            max-width: 840px;
+            max-width: 1100px;
             margin: 0 auto 70px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
             perspective: 1000px;
         }
 
@@ -324,6 +327,9 @@
             transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
             border: 1px solid var(--card-border);
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         /* Animated Glowing Edge */
@@ -350,6 +356,7 @@
             margin-bottom: 16px;
             padding-bottom: 14px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            gap: 10px;
         }
 
         .script-title {
@@ -377,7 +384,7 @@
             background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
             color: #fff;
             border: none;
-            padding: 12px 24px;
+            padding: 12px 20px;
             border-radius: 10px;
             font-weight: 700;
             font-size: 0.88rem;
@@ -388,6 +395,7 @@
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             box-shadow: 0 4px 20px var(--glow-cyan);
             overflow: hidden;
+            white-space: nowrap;
         }
 
         .btn-copy:hover {
@@ -400,6 +408,34 @@
             transform: translateY(0) scale(0.98);
         }
 
+        .btn-download {
+            position: relative;
+            background: linear-gradient(135deg, var(--accent-orange), #e65100);
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 20px var(--glow-orange);
+            white-space: nowrap;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-3px) scale(1.03);
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            box-shadow: 0 8px 25px var(--glow-cyan);
+        }
+
+        .btn-download:active {
+            transform: translateY(0) scale(0.98);
+        }
+
         .code-block {
             background: rgba(3, 5, 10, 0.92);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -409,10 +445,12 @@
             font-size: 0.9rem;
             color: #e2e8f0;
             overflow-x: auto;
-            white-space: nowrap;
             text-align: left;
             position: relative;
             box-shadow: inset 0 2px 10px rgba(0,0,0,0.8);
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
         }
 
         .code-keyword { color: #f472b6; font-weight: bold; }
@@ -595,6 +633,7 @@
             .hero p { font-size: 1rem; }
             .videos-grid { grid-template-columns: 1fr; }
             header { flex-direction: column; gap: 16px; text-align: center; }
+            .script-section { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -640,12 +679,13 @@
                 <i class="fa-solid fa-bolt"></i> Roblox Scripts & Exploits
             </div>
             
-            <h1>Macking a Beautiful <br><span>Community</span></h1>
+            <h1>Making a Beautiful <br><span>Community</span></h1>
             <p>Get official script loaders, view video demonstrations, and copy the direct link script.</p>
         </section>
 
-        <!-- Script Copy Box -->
+        <!-- Script Copy & Download Section -->
         <section class="script-section reveal">
+            <!-- Loader Script Box -->
             <div class="script-box tilt-card" id="script-box-element">
                 <div class="script-header">
                     <div class="script-title">
@@ -659,6 +699,27 @@
                 </div>
                 <div class="code-block" id="script-content">
                     <span class="code-func">loadstring</span>(<span class="code-func">game</span>:<span class="code-func">HttpGet</span>(<span class="code-string">"https://raw.githubusercontent.com/ChrisXTM/Script/refs/heads/main/Update_HeroesBG.lua"</span>))()
+                </div>
+            </div>
+
+            <!-- Auto Click Download Box -->
+            <div class="script-box tilt-card">
+                <div class="script-header">
+                    <div class="script-title">
+                        <i class="fa-solid fa-computer-mouse"></i>
+                        <span>ChrisXTM Auto Click</span>
+                    </div>
+                    <!-- Cambia ChrisXTM_AutoClick.exe según el nombre exacto de tu ejecutable -->
+                    <a href="ChrisXTM_AutoClick.exe" download="ChrisXTM_AutoClick.exe" class="btn-download">
+                        <i class="fa-solid fa-download"></i>
+                        <span>Download</span>
+                    </a>
+                </div>
+                <div class="code-block" style="white-space: normal; line-height: 1.6;">
+                    <p style="color: var(--text-muted); font-size: 0.88rem; margin: 0;">
+                        <i class="fa-solid fa-shield-halved" style="color: var(--accent-cyan); margin-right: 6px;"></i>
+                        Official Auto Clicker optimized for Roblox games. Click download to get the latest standalone release.
+                    </p>
                 </div>
             </div>
         </section>
@@ -759,7 +820,7 @@
                 osc.start();
                 osc.stop(audioCtx.currentTime + 0.15);
             } catch (e) {
-                // Audio context not allowed without interaction
+                // Audio context block safeguard
             }
         }
 
@@ -895,7 +956,11 @@
             canvas.height = window.innerHeight;
         }
 
-        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            initParticles();
+        });
+
         window.addEventListener('mousemove', (e) => {
             mouse.x = e.x;
             mouse.y = e.y;
@@ -917,7 +982,6 @@
                 if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
                 if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
 
-                // Mouse interaction
                 if (mouse.x && mouse.y) {
                     let dx = mouse.x - this.x;
                     let dy = mouse.y - this.y;
@@ -933,14 +997,15 @@
                 ctx.fillStyle = 'rgba(0, 210, 255, 0.4)';
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
                 ctx.fill();
             }
         }
 
         function initParticles() {
             particles = [];
-            const count = Math.floor((canvas.width * canvas.height) / 18000);
-            for (let i = 0; i < count; i++) {
+            const particleCount = Math.floor((canvas.width * canvas.height) / 12000);
+            for (let i = 0; i < particleCount; i++) {
                 particles.push(new Particle());
             }
         }
@@ -951,36 +1016,15 @@
                 p.update();
                 p.draw();
             });
-
-            // Connect nearby particles with lines
-            for (let a = 0; a < particles.length; a++) {
-                for (let b = a; b < particles.length; b++) {
-                    let dx = particles[a].x - particles[b].x;
-                    let dy = particles[a].y - particles[b].y;
-                    let dist = Math.sqrt(dx * dx + dy * dy);
-
-                    if (dist < 100) {
-                        ctx.strokeStyle = `rgba(0, 210, 255, ${1 - dist / 100 * 0.8})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.beginPath();
-                        ctx.moveTo(particles[a].x, particles[a].y);
-                        ctx.lineTo(particles[b].x, particles[b].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-
             requestAnimationFrame(animateParticles);
         }
 
         // Initialize Everything
-        document.addEventListener('DOMContentLoaded', () => {
-            updateVisitorCount();
-            resizeCanvas();
-            initParticles();
-            animateParticles();
-            revealOnScroll();
-        });
+        resizeCanvas();
+        initParticles();
+        animateParticles();
+        updateVisitorCount();
+        revealOnScroll();
     </script>
 </body>
 </html>
