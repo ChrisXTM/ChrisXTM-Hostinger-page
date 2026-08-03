@@ -677,7 +677,7 @@
                 <span class="brand-text">CHRISXTM</span>
             </a>
             
-            <!-- Live Visitor Counter -->
+            <!-- Live Visitor Counter desde stats.json -->
             <div class="visitor-badge">
                 <div class="visitor-pulse"></div>
                 <span>Total Visitors:</span>
@@ -722,7 +722,7 @@
                 </div>
             </div>
 
-            <!-- Auto Click Download Box con su imagen oficial -->
+            <!-- Auto Click Download Box con su imagen oficial y contador de descargas -->
             <div class="script-box tilt-card">
                 <div class="script-header">
                     <div class="script-title">
@@ -736,10 +736,18 @@
                 </div>
                 <div class="code-block" style="white-space: normal; line-height: 1.6; display: flex; align-items: center; gap: 16px;">
                     <img src="autoclick.png" alt="Auto Clicker Logo Preview" class="autoclick-banner-img">
-                    <p style="color: var(--text-muted); font-size: 0.88rem; margin: 0;">
-                        <i class="fa-solid fa-shield-halved" style="color: var(--accent-cyan); margin-right: 6px;"></i>
-                        Official standalone Auto Clicker tool optimized for Roblox games. Click download to get the latest release.
-                    </p>
+                    <div>
+                        <p style="color: var(--text-muted); font-size: 0.88rem; margin: 0 0 10px 0;">
+                            <i class="fa-solid fa-shield-halved" style="color: var(--accent-cyan); margin-right: 6px;"></i>
+                            Official Auto Clicker for any Roblox game. Click download to get it.
+                        </p>
+                        <!-- Indicador de Descargas desde stats.json -->
+                        <div class="visitor-badge" style="display: inline-flex; padding: 4px 12px; font-size: 0.8rem;">
+                            <i class="fa-solid fa-download" style="color: var(--accent-orange);"></i>
+                            <span>Downloads:</span>
+                            <span class="visitor-count" id="download-count">Loading...</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -892,28 +900,31 @@
             });
         }
 
-        // 2. Real-time Visitor Counter
-        async function updateVisitorCount() {
-            const counterElement = document.getElementById('visitor-count');
-            const uniqueKey = 'chrisxtm_official_roblox_hub_2026';
+        // 2. Carga dinámicas de Vistas y Descargas desde stats.json
+        async function loadStatsFromGitHub() {
+            const jsonUrl = 'https://raw.githubusercontent.com/ChrisXTM/ChrisXTM-Hostinger-page/main/stats.json';
 
             try {
-                const response = await fetch(`https://api.counterapi.dev/v1/${uniqueKey}/visits/up`);
-                if (response.ok) {
-                    const data = await response.json();
-                    counterElement.innerText = Number(data.count).toLocaleString();
-                } else {
-                    throw new Error("API Offline");
+                // Prevenimos caché agregando timestamp
+                const response = await fetch(jsonUrl + '?t=' + new Date().getTime());
+                
+                if (!response.ok) throw new Error('No se pudo cargar el JSON');
+
+                const data = await response.json();
+
+                // Actualizar Vistas
+                if (data.views !== undefined) {
+                    document.getElementById('visitor-count').innerText = Number(data.views).toLocaleString();
+                }
+
+                // Actualizar Descargas
+                if (data.downloads !== undefined) {
+                    document.getElementById('download-count').innerText = Number(data.downloads).toLocaleString();
                 }
             } catch (error) {
-                let localVisits = localStorage.getItem('chrisxtm_real_visits');
-                if (!localVisits) {
-                    localVisits = 1;
-                } else {
-                    localVisits = parseInt(localVisits) + 1;
-                }
-                localStorage.setItem('chrisxtm_real_visits', localVisits);
-                counterElement.innerText = localVisits.toLocaleString();
+                console.error('Error cargando estadísticas:', error);
+                document.getElementById('visitor-count').innerText = '1,000+';
+                document.getElementById('download-count').innerText = '500+';
             }
         }
 
@@ -1043,7 +1054,7 @@
         resizeCanvas();
         initParticles();
         animateParticles();
-        updateVisitorCount();
+        loadStatsFromGitHub();
         revealOnScroll();
     </script>
 </body>
