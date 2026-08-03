@@ -215,6 +215,7 @@
             color: var(--text-main);
             font-weight: 700;
             font-family: 'JetBrains Mono', monospace;
+            transition: all 0.3s ease;
         }
 
         /* Hero Section */
@@ -722,14 +723,14 @@
                 </div>
             </div>
 
-            <!-- Auto Click Download Box con su imagen oficial y contador de descargas -->
+            <!-- Auto Click Download Box con actualizador en vivo -->
             <div class="script-box tilt-card">
                 <div class="script-header">
                     <div class="script-title">
                         <img src="autoclick.png" alt="ChrisXTM Auto Click" class="card-icon-img">
                         <span>ChrisXTM Auto Click</span>
                     </div>
-                    <a href="https://github.com/ChrisXTM/ChrisXTM-Hostinger-page/releases/download/v0.1/ChrisXTM.Auto.Click.exe" class="btn-download" target="_blank" rel="noopener noreferrer">
+                    <a href="https://github.com/ChrisXTM/ChrisXTM-Hostinger-page/releases/download/v0.1/ChrisXTM.Auto.Click.exe" class="btn-download" onclick="handleDownload(event, this.href)">
                         <i class="fa-solid fa-download"></i>
                         <span>Download</span>
                     </a>
@@ -739,9 +740,9 @@
                     <div>
                         <p style="color: var(--text-muted); font-size: 0.88rem; margin: 0 0 10px 0;">
                             <i class="fa-solid fa-shield-halved" style="color: var(--accent-cyan); margin-right: 6px;"></i>
-                            Official Auto Clicker for any Roblox game. Click download to get it.
+                            Official standalone Auto Clicker tool optimized for Roblox games. Click download to get the latest release.
                         </p>
-                        <!-- Indicador de Descargas desde stats.json -->
+                        <!-- Indicador de Descargas -->
                         <div class="visitor-badge" style="display: inline-flex; padding: 4px 12px; font-size: 0.8rem;">
                             <i class="fa-solid fa-download" style="color: var(--accent-orange);"></i>
                             <span>Downloads:</span>
@@ -829,30 +830,29 @@
 
     <!-- Scripts -->
     <script>
-        // 1. Copy Script & Interactive Audio/Spark Effects
+        // Global variables for live stats
+        let currentDownloads = 0;
+
+        // 1. Copy Script & Interactive Sound/Sparks
         const rawScript = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ChrisXTM/Script/refs/heads/main/Update_HeroesBG.lua"))()';
 
-        // Futuristic Synth Sound Generator (Web Audio API)
         function playBeepSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
-                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15);
                 gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
                 osc.start();
                 osc.stop(audioCtx.currentTime + 0.15);
-            } catch (e) {
-                // Audio context block safeguard
-            }
+            } catch (e) {}
         }
 
-        // Particle burst around click location
         function createSparks(e) {
             const numSparks = 16;
             const clickX = e.clientX;
@@ -895,31 +895,49 @@
                     btnIcon.className = "fa-regular fa-copy";
                     toast.classList.remove('show');
                 }, 2500);
-            }).catch(err => {
-                console.error("Failed to copy script: ", err);
-            });
+            }).catch(err => console.error("Failed to copy script: ", err));
         }
 
-        // 2. Carga dinámicas de Vistas y Descargas desde stats.json
+        // 2. Download Event Handler & Instant Counter Incrementor
+        function handleDownload(e, url) {
+            e.preventDefault();
+            playBeepSound();
+            createSparks(e);
+
+            // Increment local download count immediately
+            currentDownloads += 1;
+            const downloadElement = document.getElementById('download-count');
+            downloadElement.innerText = currentDownloads.toLocaleString();
+            
+            // Visual bounce feedback on increment
+            downloadElement.style.transform = 'scale(1.3)';
+            downloadElement.style.color = '#00d2ff';
+            setTimeout(() => {
+                downloadElement.style.transform = 'scale(1)';
+                downloadElement.style.color = 'var(--text-main)';
+            }, 300);
+
+            // Trigger file download in new tab
+            window.open(url, '_blank');
+        }
+
+        // 3. Load stats from GitHub JSON
         async function loadStatsFromGitHub() {
             const jsonUrl = 'https://raw.githubusercontent.com/ChrisXTM/ChrisXTM-Hostinger-page/main/stats.json';
 
             try {
-                // Prevenimos caché agregando timestamp
                 const response = await fetch(jsonUrl + '?t=' + new Date().getTime());
-                
                 if (!response.ok) throw new Error('No se pudo cargar el JSON');
 
                 const data = await response.json();
 
-                // Actualizar Vistas
                 if (data.views !== undefined) {
                     document.getElementById('visitor-count').innerText = Number(data.views).toLocaleString();
                 }
 
-                // Actualizar Descargas
                 if (data.downloads !== undefined) {
-                    document.getElementById('download-count').innerText = Number(data.downloads).toLocaleString();
+                    currentDownloads = Number(data.downloads);
+                    document.getElementById('download-count').innerText = currentDownloads.toLocaleString();
                 }
             } catch (error) {
                 console.error('Error cargando estadísticas:', error);
@@ -928,7 +946,7 @@
             }
         }
 
-        // 3. 3D Card Hover Tilt Effect
+        // 4. 3D Card Hover Tilt Effect
         document.querySelectorAll('.tilt-card').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
@@ -947,7 +965,7 @@
             });
         });
 
-        // 4. Video Live Search Filter
+        // 5. Video Live Search Filter
         function filterVideos() {
             const query = document.getElementById('video-search').value.toLowerCase();
             const videoCards = document.querySelectorAll('.video-card');
@@ -962,7 +980,7 @@
             });
         }
 
-        // 5. Scroll Reveal Animation
+        // 6. Scroll Reveal Animation
         function revealOnScroll() {
             const reveals = document.querySelectorAll('.reveal');
             reveals.forEach(el => {
@@ -976,7 +994,7 @@
 
         window.addEventListener('scroll', revealOnScroll);
 
-        // 6. Interactive Canvas Particle System
+        // 7. Interactive Canvas Particle System
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
